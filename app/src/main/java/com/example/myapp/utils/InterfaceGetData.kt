@@ -1,7 +1,6 @@
 package com.example.myapp.utils
 
 import com.example.myapp.Model.GetData
-import com.example.myapp.Model.Usuario
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers

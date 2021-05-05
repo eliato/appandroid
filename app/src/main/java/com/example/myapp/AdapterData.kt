@@ -12,17 +12,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapp.Model.GetData
 
 
-class AdapterData(private val exampleList: List<GetData>,context: Context) :
+class AdapterData(private val exampleList: List<GetData>,val context: Context) :
     RecyclerView.Adapter<AdapterData.ExampleViewHolder>() {
 
-    var con = context
+
     lateinit var prefs: SharedPreferences
     var siYa = false
+
+    var sharedPreferences: SharedPreferences? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
+        sharedPreferences = context.getSharedPreferences("valor_id", Context.MODE_PRIVATE)
+
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_data,
             parent, false)
-       prefs = con.getSharedPreferences("Preferencias", Context.MODE_PRIVATE)
+
         return ExampleViewHolder(itemView)
+
+
     }
     override fun onBindViewHolder(holder: ExampleViewHolder, position: Int) {
         val currentItem = exampleList[position]
@@ -38,15 +44,34 @@ class AdapterData(private val exampleList: List<GetData>,context: Context) :
                e.putBoolean("Tracing",siYa)
 
            }
-            Toast.makeText(con, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
 
 
         }
+
+        if (exampleList[position].des_id_estado == 3){
+            holder.switchValue.isChecked = true
+
+        }
+
         holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked){
-                Toast.makeText(con,"Inicio el trackeo $position ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Inicio el trackeo $position ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                var editor = sharedPreferences!!.edit()
+                editor.putInt("id_dm",exampleList[position].dm_id)
+                editor.apply()
+                editor.commit()
+
+                (context as ViewMain).locationupdates()
+
+
             }else{
-                Toast.makeText(con,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                var editor = sharedPreferences!!.edit()
+                editor.clear()
+                editor.apply()
+                (context as ViewMain).detenerLocationUpdates()
+
             }
         }
     }

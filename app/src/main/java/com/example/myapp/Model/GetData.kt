@@ -12,6 +12,7 @@ data class GetData (
       val rt_tiempo: String,
       val cliente: String,
       val rt_inicio: String,
-      val rt_estado: Int
+      val rt_estado: Int,
+      val des_id_estado: Int
 )
 

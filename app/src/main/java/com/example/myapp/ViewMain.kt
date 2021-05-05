@@ -11,6 +11,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,40 +19,59 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapp.Model.GetData
 import com.example.myapp.Repo.ServiceBuilder
 import com.example.myapp.utils.InterfaceGetData
+import com.example.myapp.utils.InterfaceStartDomicilio
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.activity_view_main.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import java.text.DecimalFormat
 
-class ViewMain : AppCompatActivity(), MultiplePermissionsListener {
+class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListener {
 
     lateinit var prefs:SharedPreferences
     lateinit var locationManager:LocationManager
-
+    var sharedPreferences: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_main)
        prefs = getSharedPreferences("Preferencias", Context.MODE_PRIVATE)
         locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val refrescar = findViewById<Button>(R.id.refrescar)
+        sharedPreferences = getSharedPreferences("valor_id", Context.MODE_PRIVATE)
+
+        refrescar.setOnClickListener{
+            locationManager.removeUpdates(this)
+
+            locationupdates()
+            showName()
+        }
+
+
 
         Dexter.withContext(this@ViewMain)
             .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .withListener(this)
             .check();
+        //startForegroundService(Intent(applicationContext, LocationTrackingService::class.java))
 
+       //
         showName()
         //lista[0].Id
     }
 
     fun showName(){
         val bundle = intent.extras
-        val id = bundle?.get("INTENT_ID") as Int
+        var id = bundle?.get("INTENT_ID") as Int
+
         //Log.e("id", id.toString())
         getRetrofit(id)
 
@@ -85,7 +105,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener {
                        // startActivity(intent)
 
                     recicleview.layoutManager = LinearLayoutManager(this@ViewMain)
-                        recicleview.adapter = AdapterData(usuario,this@ViewMain)
+                    recicleview.adapter = AdapterData(usuario,this@ViewMain)
                     }
                 }
 
@@ -95,23 +115,54 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener {
         })
     }
 
-    private fun alert(){
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("No Tienes Domicilios Asignados")
-        builder.setIcon(R.drawable.ic_baseline_block_24)
-        //builder.setMessage(msg2)
-        /* builder.setPositiveButton("yes") { _: DialogInterface, _: Int ->
-             finish()
-         }*/
-        builder.setNegativeButton("Aceptar") { _: DialogInterface, _: Int -> }
-        builder.show()
 
+    fun startDomicilio(id_dm: Int, latitude: String, longitude: String){
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://170.80.23.121/domicilios_ver2/webservices/")
+                //.addCallAdapterFactory(object : RxJavaCallAdapterFactory())
+                //.addConverterFactory(SimpleXmlConverterFactory.create())
+            .build()
+
+        // Create Service
+        val service = retrofit.create(InterfaceStartDomicilio::class.java)
+
+        // Create JSON using JSONObject
+        val jsonObject = JSONObject()
+        jsonObject.put("id_dm", id_dm)
+        jsonObject.put("latitude", latitude)
+        jsonObject.put("longitude", longitude)
+
+        // Convert JSONObject to String
+        val jsonObjectString = jsonObject.toString()
+
+        // Create RequestBody ( We're not using any converter, like GsonConverter, MoshiConverter e.t.c, that's why we use RequestBody )
+        val requestBody = jsonObjectString.toRequestBody("application/json".toMediaTypeOrNull())
+        Log.e("BODY", "${jsonObjectString}")
+
+        val request = ServiceBuilder.buildService(InterfaceStartDomicilio::class.java)
+        val call = request.startDomicilio(requestBody)
+
+        call.enqueue(object :Callback<com.example.myapp.Model.Resultado>{
+            override fun onFailure(call: Call<com.example.myapp.Model.Resultado>, t: Throwable) {
+                Log.e("ERROR", "Faile" )
+            }
+
+            override fun onResponse(call: Call<com.example.myapp.Model.Resultado>, response: Response<com.example.myapp.Model.Resultado>) {
+                Log.e("SUCCESS", "${response.isSuccessful}" )
+
+            }
+
+        })
     }
 
-    fun locationupdates(){
+
+
+    fun locationupdates() {
+
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
@@ -126,42 +177,27 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener {
             // for ActivityCompat#requestPermissions for more details.
             Toast.makeText(this@ViewMain,"Error",Toast.LENGTH_LONG).show()
             return
-        }else{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0F, object :
-                LocationListener {
-                override fun onLocationChanged(p0: Location) {
-                    //Toast.makeText(this@ViewMain,"${p0.latitude}",Toast.LENGTH_LONG).show()
-                    Log.e("LOCATION", "${p0.latitude}")
-                }
+        }else {
 
-                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                    super.onStatusChanged(provider, status, extras)
-                    Log.e("STATUS", "${status}")
-                }
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    55000,
+                    0F,
+                  this
 
-                override fun onProviderEnabled(provider: String) {
-                    super.onProviderEnabled(provider)
-                    Log.e("ENABLED", "${provider}")
-                }
 
-                override fun onProviderDisabled(provider: String) {
-                    super.onProviderDisabled(provider)
-                    Log.e("DISABLED", "${provider}")
+            )
 
-                }
 
-            })
         }
 
     }
+
     override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
         Toast.makeText(this@ViewMain, "PERMISOS HABILITADOS",Toast.LENGTH_LONG).show()
-        locationupdates()
-
-
+        //locationupdates()
+        //locationManager.removeUpdates(LocationListener { })
     }
-
-
 
     override fun onPermissionRationaleShouldBeShown(
         p0: MutableList<PermissionRequest>?,
@@ -169,6 +205,61 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener {
     ) {
 
     }
+
+
+    private fun alert(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("No Tienes Domicilios Asignados")
+        builder.setIcon(R.drawable.ic_baseline_block_24)
+        //builder.setMessage(msg2)
+        /* builder.setPositiveButton("yes") { _: DialogInterface, _: Int ->
+             finish()
+         }*/
+        builder.setNegativeButton("Aceptar") { _: DialogInterface, _: Int -> }
+        builder.show()
+
+    }
+
+    override fun onLocationChanged(location: Location) {
+
+        val dec = DecimalFormat("#.######")
+        var latitud = dec.format(location.latitude)
+        var longitud = dec.format(location.longitude)
+
+        Log.e("LOCATION", "${latitud},${longitud}")
+        var id = sharedPreferences!!.getInt("id_dm",0)
+        if (id != 0){
+            startDomicilio(id, latitud, longitud)
+        }
+
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        //super.onStatusChanged(provider, status, extras)
+        //locationManager.removeUpdates(this)
+        Log.e("STATUS", "${status}")
+        //locationManager.removeUpdates(this)
+    }
+
+    override fun onProviderEnabled(provider: String) {
+        super.onProviderEnabled(provider)
+        Log.e("ENABLED", "${provider}")
+    }
+
+    override fun onProviderDisabled(provider: String) {
+        super.onProviderDisabled(provider)
+        Log.e("DISABLED", "${provider}")
+
+    }
+    fun onPause(provider: String){
+        super.onProviderDisabled(provider)
+        locationManager.removeUpdates(this)
+    }
+
+    fun detenerLocationUpdates(){
+        locationManager.removeUpdates(this)
+    }
+
 
 
 }

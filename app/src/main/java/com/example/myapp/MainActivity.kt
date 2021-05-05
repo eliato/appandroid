@@ -3,18 +3,18 @@ package com.example.myapp
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.JsonReader
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myapp.Model.Usuario
 import com.example.myapp.Repo.ServiceBuilder
 import com.example.myapp.utils.InterfaceUsuario
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 
 class MainActivity : AppCompatActivity() {
