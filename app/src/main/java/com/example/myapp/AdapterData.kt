@@ -56,7 +56,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
 
         holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked){
-                Toast.makeText(context,"Inicio el trackeo $position ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Inicio el trackeo  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
                 var editor = sharedPreferences!!.edit()
                 editor.putInt("id_dm",exampleList[position].dm_id)
                 editor.apply()
@@ -68,10 +68,13 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
             }else{
                 Toast.makeText(context,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
                 var editor = sharedPreferences!!.edit()
-                editor.clear()
+               editor.putInt("idd",exampleList[position].dm_id)
                 editor.apply()
+                editor.commit()
                 (context as ViewMain).detenerLocationUpdates()
+                context.finalizaDomicilio()
 
+                editor.clear()
             }
         }
     }

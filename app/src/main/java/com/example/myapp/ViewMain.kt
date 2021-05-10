@@ -16,8 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapp.Model.FinalizaDomicilio
 import com.example.myapp.Model.GetData
 import com.example.myapp.Repo.ServiceBuilder
+import com.example.myapp.utils.InterfaceFinishDomicilio
 import com.example.myapp.utils.InterfaceGetData
 import com.example.myapp.utils.InterfaceStartDomicilio
 import com.karumi.dexter.Dexter
@@ -50,7 +52,6 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
         refrescar.setOnClickListener{
             locationManager.removeUpdates(this)
-
             locationupdates()
             showName()
         }
@@ -58,7 +59,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
 
         Dexter.withContext(this@ViewMain)
-            .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            .withPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .withListener(this)
             .check();
         //startForegroundService(Intent(applicationContext, LocationTrackingService::class.java))
@@ -76,6 +77,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         getRetrofit(id)
 
     }
+
 
     private fun getRetrofit(id: Int) {
         //val textView : TextView = findViewById(R.id.recicleview)
@@ -117,7 +119,6 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
 
     fun startDomicilio(id_dm: Int, latitude: String, longitude: String){
-
         val retrofit = Retrofit.Builder()
             .baseUrl("http://170.80.23.121/domicilios_ver2/webservices/")
                 //.addCallAdapterFactory(object : RxJavaCallAdapterFactory())
@@ -159,7 +160,6 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
 
     fun locationupdates() {
-
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
@@ -178,19 +178,13 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             Toast.makeText(this@ViewMain,"Error",Toast.LENGTH_LONG).show()
             return
         }else {
-
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     55000,
                     0F,
                   this
-
-
             )
-
-
         }
-
     }
 
     override fun onPermissionsChecked(p0: MultiplePermissionsReport?) {
@@ -221,7 +215,6 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
     }
 
     override fun onLocationChanged(location: Location) {
-
         val dec = DecimalFormat("#.######")
         var latitud = dec.format(location.latitude)
         var longitud = dec.format(location.longitude)
@@ -260,6 +253,27 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         locationManager.removeUpdates(this)
     }
 
+
+    fun finalizaDomicilio(){
+        var idd = sharedPreferences!!.getInt("idd",0)
+        val request = ServiceBuilder.buildService(InterfaceFinishDomicilio::class.java)
+        val call = request.finalizaDomicilio(idd)
+
+        call.enqueue(object :Callback<FinalizaDomicilio>{
+            override fun onFailure(call: Call<FinalizaDomicilio>, t: Throwable) {
+                Log.e("CallbackFail",t.message.toString())
+            }
+
+
+
+            override fun onResponse(call: Call<FinalizaDomicilio>, response: Response<FinalizaDomicilio>) {
+                Log.e("Login Response","$response")
+                //val fdomicilio = response.body()
+            }
+
+        })
+
+    }
 
 
 }
