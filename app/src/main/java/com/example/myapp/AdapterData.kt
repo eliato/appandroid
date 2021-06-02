@@ -46,13 +46,13 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
            }
             Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
 
-
         }
 
         if (exampleList[position].des_id_estado == 3){
             holder.switchValue.isChecked = true
 
         }
+
 
         holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked){
@@ -61,9 +61,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
                 editor.putInt("id_dm",exampleList[position].dm_id)
                 editor.apply()
                 editor.commit()
-
                 (context as ViewMain).locationupdates()
-
 
             }else{
                 Toast.makeText(context,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
@@ -75,6 +73,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
                 context.finalizaDomicilio()
 
                 editor.clear()
+
             }
         }
     }
@@ -87,6 +86,8 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
 
 
-
     }
 }
+
+
+

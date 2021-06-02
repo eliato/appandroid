@@ -16,8 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapp.DataUser.Companion.preffs
 import com.example.myapp.Model.FinalizaDomicilio
 import com.example.myapp.Model.GetData
+import com.example.myapp.Model.Resultado
 import com.example.myapp.Repo.ServiceBuilder
 import com.example.myapp.utils.InterfaceFinishDomicilio
 import com.example.myapp.utils.InterfaceGetData
@@ -44,6 +46,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
     var sharedPreferences: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         setContentView(R.layout.activity_view_main)
        prefs = getSharedPreferences("Preferencias", Context.MODE_PRIVATE)
         locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -51,27 +54,27 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         sharedPreferences = getSharedPreferences("valor_id", Context.MODE_PRIVATE)
 
         refrescar.setOnClickListener{
-            locationManager.removeUpdates(this)
+           // locationManager.removeUpdates(this)
+            detenerLocationUpdates()
             locationupdates()
             showName()
+
         }
 
-
-
         Dexter.withContext(this@ViewMain)
-            .withPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
             .withListener(this)
             .check();
         //startForegroundService(Intent(applicationContext, LocationTrackingService::class.java))
-
-       //
+        //checkUserLog()
         showName()
         //lista[0].Id
     }
 
     fun showName(){
         val bundle = intent.extras
-        var id = bundle?.get("INTENT_ID") as Int
+        //var id = bundle?.get("INTENT_ID") as Int
+        var id = preffs.getIdmo()
 
         //Log.e("id", id.toString())
         getRetrofit(id)
@@ -99,6 +102,8 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
                     if (usuario[0].dm_id == 0){
                        //Toast.makeText(this@ViewMain,"Sin Domicilios",Toast.LENGTH_LONG).show()
                         alert()
+                        recicleview.adapter?.notifyDataSetChanged()
+                        recicleview.adapter = null
                     }else{
                         //alert("bienvenido", "${usuario!!.usu_nombres}")
                         //intent.putExtra("INTENT_USUARIO", usuario.cli_id)
@@ -134,7 +139,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         jsonObject.put("latitude", latitude)
         jsonObject.put("longitude", longitude)
 
-        // Convert JSONObject to String
+        // Convert JSONObject to String 
         val jsonObjectString = jsonObject.toString()
 
         // Create RequestBody ( We're not using any converter, like GsonConverter, MoshiConverter e.t.c, that's why we use RequestBody )
@@ -144,13 +149,14 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         val request = ServiceBuilder.buildService(InterfaceStartDomicilio::class.java)
         val call = request.startDomicilio(requestBody)
 
-        call.enqueue(object :Callback<com.example.myapp.Model.Resultado>{
-            override fun onFailure(call: Call<com.example.myapp.Model.Resultado>, t: Throwable) {
+        call.enqueue(object :Callback<Resultado>{
+            override fun onFailure(call: Call<Resultado>, t: Throwable) {
                 Log.e("ERROR", "Faile" )
             }
 
-            override fun onResponse(call: Call<com.example.myapp.Model.Resultado>, response: Response<com.example.myapp.Model.Resultado>) {
+            override fun onResponse(call: Call<Resultado>, response: Response<Resultado>) {
                 Log.e("SUCCESS", "${response.isSuccessful}" )
+                Log.e("ACTIVA","$response")
 
             }
 
@@ -165,7 +171,8 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+               // Manifest.permission.ACCESS_FINE_LOCATION  //para ver 9-
+                  Manifest.permission.ACCESS_COARSE_LOCATION //para ver 10+
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // TODO: Consider calling
@@ -184,6 +191,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
                     0F,
                   this
             )
+
         }
     }
 
@@ -221,6 +229,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
         Log.e("LOCATION", "${latitud},${longitud}")
         var id = sharedPreferences!!.getInt("id_dm",0)
+        Log.e("MENSAJE", "$id")
         if (id != 0){
             startDomicilio(id, latitud, longitud)
         }
@@ -229,9 +238,9 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         //super.onStatusChanged(provider, status, extras)
-        //locationManager.removeUpdates(this)
         Log.e("STATUS", "${status}")
-        //locationManager.removeUpdates(this)
+
+
     }
 
     override fun onProviderEnabled(provider: String) {
@@ -258,14 +267,10 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         var idd = sharedPreferences!!.getInt("idd",0)
         val request = ServiceBuilder.buildService(InterfaceFinishDomicilio::class.java)
         val call = request.finalizaDomicilio(idd)
-
         call.enqueue(object :Callback<FinalizaDomicilio>{
             override fun onFailure(call: Call<FinalizaDomicilio>, t: Throwable) {
                 Log.e("CallbackFail",t.message.toString())
             }
-
-
-
             override fun onResponse(call: Call<FinalizaDomicilio>, response: Response<FinalizaDomicilio>) {
                 Log.e("Login Response","$response")
                 //val fdomicilio = response.body()

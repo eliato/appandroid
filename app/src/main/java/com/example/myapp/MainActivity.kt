@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapp.DataUser.Companion.preffs
 import com.example.myapp.Model.Usuario
 import com.example.myapp.Repo.ServiceBuilder
 import com.example.myapp.utils.InterfaceUsuario
@@ -25,8 +26,16 @@ class MainActivity : AppCompatActivity() {
         val btnIniciar = findViewById<Button>(R.id.bt_iniciar)
         btnIniciar.setOnClickListener{validar()}
 
-
+        accessToDetail()
     }
+
+    fun accessToDetail(){
+        if (preffs.getName().isNotEmpty()){
+            startActivity(Intent(this, ViewMain::class.java))
+        }
+    }
+
+
 /*  aca stan las validaciones de los campos que no esten vacios chivo*/
     private fun validar(){
         val usuario = findViewById<EditText>(R.id.username)
@@ -39,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             if (password.isNotEmpty()){
                 getRetrofit(usuario2,password)
             }else{
-                alert("Contraseña Vacía", "Debes Escribir una Contraseña")
+                 alert("Contraseña Vacía", "Debes Escribir una Contraseña")
                 pass.requestFocus()
             }
         }else {
@@ -82,9 +91,13 @@ class MainActivity : AppCompatActivity() {
                         alert("Usuario o Contraseña Erroneos", "Por favor Verificar")
                     }else{
                         //alert("bienvenido", "${usuario!!.usu_nombres}")
-                        intent.putExtra("INTENT_USUARIO", usuario.usu_nombre)
-                        intent.putExtra("INTENT_ID", usuario.usu_id_mo)
+                        preffs.saveName(usuario.usu_nombre)
+                        preffs.saveIdmo(usuario.usu_id_mo)
+
                         startActivity(intent)
+                       /* intent.putExtra("INTENT_USUARIO", usuario.usu_nombre)
+                        intent.putExtra("INTENT_ID", usuario.usu_id_mo)
+                        startActivity(intent)*/
                     }
                 }
 
