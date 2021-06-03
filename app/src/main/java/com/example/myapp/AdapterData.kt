@@ -1,7 +1,6 @@
 package com.example.myapp
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapp.DataUser.Companion.preffs
 import com.example.myapp.Model.GetData
 
 
@@ -16,12 +16,9 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
     RecyclerView.Adapter<AdapterData.ExampleViewHolder>() {
 
 
-    lateinit var prefs: SharedPreferences
     var siYa = false
 
-    var sharedPreferences: SharedPreferences? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
-        sharedPreferences = context.getSharedPreferences("valor_id", Context.MODE_PRIVATE)
 
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_data,
             parent, false)
@@ -34,16 +31,18 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         val currentItem = exampleList[position]
         //holder.imageView.setImageResource(currentItem.imageResource)
         holder.textView1.text = currentItem.cliente
-        holder.textView2.text = currentItem.mt_motivo
+        holder.textView2.text = currentItem.telefono
+        holder.textView3.text = currentItem.dir_direccion
+        holder.textView4.text = currentItem.mt_motivo
+        holder.textView5.text = "Orden: "+currentItem.rt_orden.toString()
+
+
+
+
+
 
         holder.itemView.setOnClickListener {
-           if (!siYa && position<= (exampleList.size-1)){
-               //aqui en teoria iniciarias verdad
-               siYa=true
-               var e = prefs.edit()
-               e.putBoolean("Tracing",siYa)
 
-           }
             Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
 
         }
@@ -57,23 +56,15 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked){
                 Toast.makeText(context,"Inicio el trackeo  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
-                var editor = sharedPreferences!!.edit()
-                editor.putInt("id_dm",exampleList[position].dm_id)
-                editor.apply()
-                editor.commit()
+                preffs.saveId_dm(exampleList[position].dm_id)
                 (context as ViewMain).locationupdates()
 
             }else{
                 Toast.makeText(context,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
-                var editor = sharedPreferences!!.edit()
-               editor.putInt("idd",exampleList[position].dm_id)
-                editor.apply()
-                editor.commit()
+                preffs.saveId_dm2(exampleList[position].dm_id)
                 (context as ViewMain).detenerLocationUpdates()
                 context.finalizaDomicilio()
-
-                editor.clear()
-
+                preffs.saveId_dm(0)
             }
         }
     }
@@ -81,8 +72,10 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
     class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //val imageView: ImageView = itemView.findViewById(R.id.image_view)
         val textView1: TextView = itemView.findViewById(R.id.tname)
-        val textView2: TextView = itemView.findViewById(R.id.direccion)
-
+        val textView2: TextView = itemView.findViewById(R.id.telefono)
+        val textView3: TextView = itemView.findViewById(R.id.direccion)
+        val textView4: TextView = itemView.findViewById(R.id.tipo)
+        val textView5: TextView = itemView.findViewById(R.id.orden)
         var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
 
 

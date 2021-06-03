@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
@@ -11,6 +12,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -68,7 +71,23 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         //startForegroundService(Intent(applicationContext, LocationTrackingService::class.java))
         //checkUserLog()
         showName()
-        //lista[0].Id
+        //lista[0].Id117977694
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.cerrar_session -> {
+                preffs.wipe()
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun showName(){
@@ -228,7 +247,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         var longitud = dec.format(location.longitude)
 
         Log.e("LOCATION", "${latitud},${longitud}")
-        var id = sharedPreferences!!.getInt("id_dm",0)
+        var id = preffs.getId_dm()
         Log.e("MENSAJE", "$id")
         if (id != 0){
             startDomicilio(id, latitud, longitud)
@@ -264,7 +283,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
 
     fun finalizaDomicilio(){
-        var idd = sharedPreferences!!.getInt("idd",0)
+        var idd = preffs.getId_dm2()
         val request = ServiceBuilder.buildService(InterfaceFinishDomicilio::class.java)
         val call = request.finalizaDomicilio(idd)
         call.enqueue(object :Callback<FinalizaDomicilio>{

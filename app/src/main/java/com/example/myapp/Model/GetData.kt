@@ -13,6 +13,8 @@ data class GetData (
       val cliente: String,
       val rt_inicio: String,
       val rt_estado: Int,
-      val des_id_estado: Int
+      val des_id_estado: Int,
+      var dir_direccion: String,
+      var telefono: String
 )
 
