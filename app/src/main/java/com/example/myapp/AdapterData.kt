@@ -1,6 +1,7 @@
 package com.example.myapp
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.myapp.Model.GetData
 
 class AdapterData(private val exampleList: List<GetData>,val context: Context) :
     RecyclerView.Adapter<AdapterData.ExampleViewHolder>() {
+
 
 
     var siYa = false
@@ -36,15 +38,14 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         holder.textView4.text = currentItem.mt_motivo
         holder.textView5.text = "Orden: "+currentItem.rt_orden.toString()
 
-
-
-
-
-
         holder.itemView.setOnClickListener {
-
+            //context.startActivity(Intent(context, ActivityWeb::class.java))
             Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
 
+            val intent = Intent(context, ActivityWeb::class.java)
+
+            intent.putExtra("VALOR", "${currentItem.dm_id}")
+            context.startActivity(intent)
         }
 
         if (exampleList[position].des_id_estado == 3){
@@ -80,7 +81,10 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
 
 
     }
-}
+
+
+
+   }
 
 
 

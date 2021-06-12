@@ -74,6 +74,10 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         //lista[0].Id117977694
     }
 
+    override fun onBackPressed() {
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.nav_menu,menu)
         return true
@@ -99,6 +103,8 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         getRetrofit(id)
 
     }
+
+
 
 
     private fun getRetrofit(id: Int) {
