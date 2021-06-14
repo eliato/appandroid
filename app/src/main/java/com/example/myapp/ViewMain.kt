@@ -188,16 +188,18 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         })
     }
 
-
-
     fun locationupdates() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
-               // Manifest.permission.ACCESS_FINE_LOCATION  //para ver 9-
-                  Manifest.permission.ACCESS_COARSE_LOCATION //para ver 10+
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q){
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        }else{
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        }
+
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             // TODO: Consider calling
