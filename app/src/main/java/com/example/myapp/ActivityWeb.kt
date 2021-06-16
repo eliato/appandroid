@@ -16,7 +16,7 @@ class ActivityWeb : AppCompatActivity() {
 
         var id = intent.getStringExtra("VALOR")
 
-        val url = "https://domicilioslcr.com/domicilios_ver2/views/rt_ruta_moto.php?id_dm=$id"
+        val url = "https://domicilioslcr.com/domicilios_ver2/webservices/rt_ruta_moto_webservice.php?id_dm=$id"
 
         val BASE_URL = url
 

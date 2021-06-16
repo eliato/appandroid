@@ -15,6 +15,7 @@ data class GetData (
       val rt_estado: Int,
       val des_id_estado: Int,
       var dir_direccion: String,
-      var telefono: String
+      var telefono: String,
+      var latlong_cli: String
 )
 

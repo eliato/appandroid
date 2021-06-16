@@ -42,9 +42,12 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
             //context.startActivity(Intent(context, ActivityWeb::class.java))
             Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(context, ActivityWeb::class.java)
-
+            /*val intent = Intent(context, ActivityWeb::class.java) //version es la version web
             intent.putExtra("VALOR", "${currentItem.dm_id}")
+            */
+            val intent = Intent(context, NavigationView::class.java) //version utilizando google maps
+            intent.putExtra("VALOR", "${currentItem.latlong_cli}")
+
             context.startActivity(intent)
         }
 
