@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -53,16 +52,24 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         setContentView(R.layout.activity_view_main)
        prefs = getSharedPreferences("Preferencias", Context.MODE_PRIVATE)
         locationManager=getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val refrescar = findViewById<Button>(R.id.refrescar)
+       // val refrescar = findViewById<Button>(R.id.refrescar)
         sharedPreferences = getSharedPreferences("valor_id", Context.MODE_PRIVATE)
 
-        refrescar.setOnClickListener{
+        /*refrescar.setOnClickListener{
            // locationManager.removeUpdates(this)
             detenerLocationUpdates()
             locationupdates()
             showName()
 
+        }*/
+
+        swipeRefresh.setOnRefreshListener{
+            detenerLocationUpdates()
+            locationupdates()
+            showName()
         }
+
+        swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.design_default_color_secondary);
 
         Dexter.withContext(this@ViewMain)
             .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -75,7 +82,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
     }
 
     override fun onBackPressed() {
-
+    //este metodo es para que no haga nada al darle atras en el telefono
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -101,7 +108,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
         //Log.e("id", id.toString())
         getRetrofit(id)
-
+        swipeRefresh.isRefreshing = false
     }
 
 
