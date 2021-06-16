@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp">
         <activity android:name=".NavigationView"></activity>
-        <activity android:name=".ActivityWeb" />
-        <activity android:name=".ViewMain" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ActivityWeb" android:screenOrientation="portrait"/>
+        <activity android:name=".ViewMain" android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
