@@ -69,7 +69,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             showName()
         }
 
-        swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.design_default_color_secondary);
+        swipeRefresh.setProgressBackgroundColorSchemeResource(R.color.ic_launcher_background);
 
         Dexter.withContext(this@ViewMain)
             .withPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)

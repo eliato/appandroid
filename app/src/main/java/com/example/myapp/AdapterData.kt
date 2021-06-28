@@ -40,7 +40,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
 
         holder.itemView.setOnClickListener {
             //context.startActivity(Intent(context, ActivityWeb::class.java))
-            Toast.makeText(context, "seleccionaste un domicilio", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Abriendo Ruta hacia el Cliente.", Toast.LENGTH_SHORT).show()
 
             /*val intent = Intent(context, ActivityWeb::class.java) //version es la version web
             intent.putExtra("VALOR", "${currentItem.dm_id}")
