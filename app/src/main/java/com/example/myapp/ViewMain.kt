@@ -2,6 +2,7 @@ package com.example.myapp
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -26,6 +27,8 @@ import com.example.myapp.Repo.ServiceBuilder
 import com.example.myapp.utils.InterfaceFinishDomicilio
 import com.example.myapp.utils.InterfaceGetData
 import com.example.myapp.utils.InterfaceStartDomicilio
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -40,12 +43,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.text.DecimalFormat
-
 class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListener {
 
     lateinit var prefs:SharedPreferences
     lateinit var locationManager:LocationManager
     var sharedPreferences: SharedPreferences? = null
+    val db = Firebase.firestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -78,6 +81,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         //startForegroundService(Intent(applicationContext, LocationTrackingService::class.java))
         //checkUserLog()
         showName()
+
         //lista[0].Id117977694
     }
 
@@ -221,7 +225,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         }else {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    55000,
+                    3000,
                     0F,
                   this
             )
@@ -264,8 +268,10 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         Log.e("LOCATION", "${latitud},${longitud}")
         var id = preffs.getId_dm()
         Log.e("MENSAJE", "$id")
+
         if (id != 0){
-            startDomicilio(id, latitud, longitud)
+            //startDomicilio(id, latitud, longitud)
+            saveFirebase(latitud, longitud)
         }
 
     }
@@ -311,6 +317,25 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             }
 
         })
+
+    }
+
+    fun saveFirebase(latitude: String,longitude: String){
+        val user = hashMapOf(
+            "lat" to latitude.toDouble(),
+            "lng" to longitude.toDouble(),
+            "nombre" to "Elias Torres"
+        )
+
+        db.collection("usuarios")
+            .document("moto")
+            .set(user)
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot added with ")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
 
     }
 
