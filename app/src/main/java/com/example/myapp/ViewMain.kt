@@ -327,7 +327,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             "nombre" to "Elias Torres"
         )
 
-        db.collection("usuarios")
+        db.collection("motos")
             .document("moto")
             .set(user)
             .addOnSuccessListener {

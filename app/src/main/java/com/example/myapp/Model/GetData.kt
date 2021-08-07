@@ -16,6 +16,7 @@ data class GetData (
       val des_id_estado: Int,
       var dir_direccion: String,
       var telefono: String,
-      var latlong_cli: String
+      var latlong_cli: String,
+      var codigo_dm: String
 )
 
