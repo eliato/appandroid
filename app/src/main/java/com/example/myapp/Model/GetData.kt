@@ -17,6 +17,7 @@ data class GetData (
       var dir_direccion: String,
       var telefono: String,
       var latlong_cli: String,
-      var codigo_dm: String
+      var dm_codigo: String,
+      var mo_nombre:String
 )
 

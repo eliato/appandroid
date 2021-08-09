@@ -61,6 +61,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
             if (checked){
                 Toast.makeText(context,"Inicio el trackeo  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
                 preffs.saveId_dm(exampleList[position].dm_id)
+                preffs.saveCodigo(exampleList[position].dm_codigo)
                 (context as ViewMain).locationupdates()
 
             }else{

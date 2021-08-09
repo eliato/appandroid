@@ -267,11 +267,12 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
         Log.e("LOCATION", "${latitud},${longitud}")
         var id = preffs.getId_dm()
+        var dm_codigo = preffs.getCodigo()
         Log.e("MENSAJE", "$id")
 
         if (id != 0){
             //startDomicilio(id, latitud, longitud)
-            saveFirebase(latitud, longitud)
+            saveFirebase(latitud, longitud,dm_codigo)
         }
 
     }
@@ -320,15 +321,16 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
     }
 
-    fun saveFirebase(latitude: String,longitude: String){
+    fun saveFirebase(latitude: String, longitude: String, dm_codigo: String){
         val user = hashMapOf(
-            "lat" to latitude.toDouble(),
-            "lng" to longitude.toDouble(),
-            "nombre" to "Elias Torres"
+            "latitude" to latitude.toDouble(),
+            "longitude" to longitude.toDouble(),
+            "nombre_moto" to "Elias Torres"
         )
+        Log.e("codigo md", "$dm_codigo")
 
         db.collection("motos")
-            .document("moto")
+            .document("$dm_codigo")
             .set(user)
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot added with ")
