@@ -268,11 +268,14 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         Log.e("LOCATION", "${latitud},${longitud}")
         var id = preffs.getId_dm()
         var dm_codigo = preffs.getCodigo()
+        var mo_nombre = preffs.getMo_nombre()
+        var mo_telefono = preffs.getMo_telefono()
+        var vh_placa =  preffs.getVh_placa()
         Log.e("MENSAJE", "$id")
 
         if (id != 0){
             //startDomicilio(id, latitud, longitud)
-            saveFirebase(latitud, longitud,dm_codigo)
+            saveFirebase(latitud, longitud,dm_codigo,mo_nombre,mo_telefono,vh_placa)
         }
 
     }
@@ -321,11 +324,21 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
     }
 
-    fun saveFirebase(latitude: String, longitude: String, dm_codigo: String){
+    fun saveFirebase(
+        latitude: String,
+        longitude: String,
+        dm_codigo: String,
+        mo_nombre: String,
+        mo_telefono: String,
+        vh_placa: String
+    ){
         val user = hashMapOf(
             "latitude" to latitude.toDouble(),
             "longitude" to longitude.toDouble(),
-            "nombre_moto" to "Elias Torres"
+            "nombre_moto" to mo_nombre,
+            "placa_moto" to vh_placa,
+            "telefono_moto" to mo_telefono
+
         )
         Log.e("codigo md", "$dm_codigo")
 

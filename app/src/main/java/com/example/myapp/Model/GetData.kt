@@ -18,6 +18,8 @@ data class GetData (
       var telefono: String,
       var latlong_cli: String,
       var dm_codigo: String,
-      var mo_nombre:String
+      var mo_nombre:String,
+      var mo_telefono:String,
+      var vh_placa:String
 )
 

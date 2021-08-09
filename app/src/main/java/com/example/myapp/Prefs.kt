@@ -10,6 +10,9 @@ class Prefs(val context:Context) {
     val SHARED_ID_DM = "id_dm"
     val SHARED_ID_DM2 = "id_dm2"
     val SHARED_CODIGO_DM = "dm_codigo"
+    val SHARED_MO_NOMBRE = "mo_nombre"
+    val SHARED_MO_TELEFONO = "mo_telefono"
+    val SHARED_VH_PLACA = "vh_placa"
 
     val storage = context.getSharedPreferences(SHARED_NAME, 0)
 
@@ -39,6 +42,21 @@ class Prefs(val context:Context) {
         storage.edit().putString(SHARED_CODIGO_DM, dm_codigo).apply()
     }
     fun getCodigo():String= storage.getString(SHARED_CODIGO_DM,"")!!
+
+    fun saveMo_nombre(mo_nombre:String){
+        storage.edit().putString(SHARED_MO_NOMBRE,mo_nombre).apply()
+    }
+    fun getMo_nombre():String= storage.getString(SHARED_MO_NOMBRE,"")!!
+
+    fun saveMo_telefono(mo_telefono:String){
+        storage.edit().putString(SHARED_MO_TELEFONO,mo_telefono).apply()
+    }
+    fun getMo_telefono():String= storage.getString(SHARED_MO_TELEFONO,"")!!
+
+    fun saveVh_placa(vh_placa:String){
+        storage.edit().putString(SHARED_VH_PLACA,vh_placa).apply()
+    }
+    fun getVh_placa():String= storage.getString(SHARED_VH_PLACA,"")!!
     
 
     fun wipe(){
