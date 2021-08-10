@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
@@ -58,9 +59,30 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         }
 
 
-        holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
+       holder.btnIniciar.setOnClickListener {
+           Toast.makeText(context,"Inicio el trackeo ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+           preffs.saveId_dm(exampleList[position].dm_id)
+           preffs.saveCodigo(exampleList[position].dm_codigo)
+           preffs.saveMo_nombre(exampleList[position].mo_nombre)
+           preffs.saveMo_telefono(exampleList[position].mo_telefono)
+           preffs.saveVh_placa(exampleList[position].vh_placa)
+           preffs.saveFactura(exampleList[position].factura)
+
+           (context as ViewMain).locationupdates()
+       }
+
+        holder.btnFinalizar.setOnClickListener {
+            Toast.makeText(context,"Finalizo el trackeo $position  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+            preffs.saveId_dm2(exampleList[position].dm_id)
+            (context as ViewMain).detenerLocationUpdates()
+            context.finalizaDomicilio()
+            preffs.saveId_dm(0)
+        }
+
+
+        /*holder.switchValue.setOnCheckedChangeListener { compoundButton, checked ->
             if (checked){
-                Toast.makeText(context,"Inicio el trackeo  ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"Inicio el trackeo ${exampleList[position].cliente}",Toast.LENGTH_LONG).show()
                 preffs.saveId_dm(exampleList[position].dm_id)
                 preffs.saveCodigo(exampleList[position].dm_codigo)
                 preffs.saveMo_nombre(exampleList[position].mo_nombre)
@@ -77,7 +99,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
                 context.finalizaDomicilio()
                 preffs.saveId_dm(0)
             }
-        }
+        }*/
     }
     override fun getItemCount() = exampleList.size
     class ExampleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -89,7 +111,8 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         val textView6: TextView = itemView.findViewById(R.id.factura)
         val textView5: TextView = itemView.findViewById(R.id.orden)
         var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
-
+        var btnIniciar = itemView.findViewById<Button>(R.id.biniciar)
+        var btnFinalizar = itemView.findViewById<Button>(R.id.bfinalizar)
 
     }
 
