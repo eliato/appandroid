@@ -37,6 +37,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         holder.textView3.text = currentItem.dir_direccion
         holder.textView4.text = currentItem.mt_motivo
         holder.textView5.text = "Orden: "+currentItem.rt_orden.toString()
+        holder.textView6.text = "Factura: "+currentItem.factura
 
         holder.itemView.setOnClickListener {
             //context.startActivity(Intent(context, ActivityWeb::class.java))
@@ -65,6 +66,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
                 preffs.saveMo_nombre(exampleList[position].mo_nombre)
                 preffs.saveMo_telefono(exampleList[position].mo_telefono)
                 preffs.saveVh_placa(exampleList[position].vh_placa)
+                preffs.saveFactura(exampleList[position].factura)
 
                 (context as ViewMain).locationupdates()
 
@@ -84,6 +86,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         val textView2: TextView = itemView.findViewById(R.id.telefono)
         val textView3: TextView = itemView.findViewById(R.id.direccion)
         val textView4: TextView = itemView.findViewById(R.id.tipo)
+        val textView6: TextView = itemView.findViewById(R.id.factura)
         val textView5: TextView = itemView.findViewById(R.id.orden)
         var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
 

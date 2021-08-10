@@ -340,7 +340,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             "telefono_moto" to mo_telefono
 
         )
-        Log.e("codigo md", "$dm_codigo")
+        //Log.e("codigo md", "$dm_codigo")
 
         db.collection("motos")
             .document("$dm_codigo")

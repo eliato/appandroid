@@ -20,6 +20,7 @@ data class GetData (
       var dm_codigo: String,
       var mo_nombre:String,
       var mo_telefono:String,
-      var vh_placa:String
+      var vh_placa:String,
+      var factura:String
 )
 
