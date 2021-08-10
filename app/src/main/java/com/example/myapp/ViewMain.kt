@@ -318,6 +318,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             override fun onResponse(call: Call<FinalizaDomicilio>, response: Response<FinalizaDomicilio>) {
                 Log.e("Login Response","$response")
                 //val fdomicilio = response.body()
+                showName()
             }
 
         })
