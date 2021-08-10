@@ -20,4 +20,14 @@
         <item name="android:headerDividersEnabled">true</item>
         <item name="android:background">@android:color/holo_blue_dark</item>
     </style>
+    <style name="btn_register">
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:backgroundTint">#4CAF50</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
+    <style name="btn_finalizar">
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:backgroundTint">#ADB15B00</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
 </resources>
