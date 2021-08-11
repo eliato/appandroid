@@ -43,6 +43,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
+
 class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListener {
 
     lateinit var prefs:SharedPreferences
@@ -271,11 +274,12 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         var mo_nombre = preffs.getMo_nombre()
         var mo_telefono = preffs.getMo_telefono()
         var vh_placa =  preffs.getVh_placa()
+        var nombreFoto = preffs.getFoto()
         Log.e("MENSAJE", "$id")
 
         if (id != 0){
             //startDomicilio(id, latitud, longitud)
-            saveFirebase(latitud, longitud,dm_codigo,mo_nombre,mo_telefono,vh_placa)
+            saveFirebase(latitud, longitud,dm_codigo,mo_nombre,mo_telefono,vh_placa,nombreFoto)
         }
 
     }
@@ -314,6 +318,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         call.enqueue(object :Callback<FinalizaDomicilio>{
             override fun onFailure(call: Call<FinalizaDomicilio>, t: Throwable) {
                 Log.e("CallbackFail",t.message.toString())
+                Log.e("Error", "id $idd")
             }
             override fun onResponse(call: Call<FinalizaDomicilio>, response: Response<FinalizaDomicilio>) {
                 Log.e("Login Response","$response")
@@ -323,6 +328,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
 
         })
 
+
     }
 
     fun saveFirebase(
@@ -331,14 +337,21 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         dm_codigo: String,
         mo_nombre: String,
         mo_telefono: String,
-        vh_placa: String
+        vh_placa: String,
+        mo_url_img: String
     ){
+        val fecha = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val currentDate = fecha.format(Date())
+        val ip: String = getString(R.string.ip)
+        val urlfoto= ip+"domicilios_ver2/fotos_motoristas/"+mo_url_img
+
         val user = hashMapOf(
             "latitude" to latitude.toDouble(),
             "longitude" to longitude.toDouble(),
             "nombre_moto" to mo_nombre,
             "placa_moto" to vh_placa,
-            "telefono_moto" to mo_telefono
+            "telefono_moto" to mo_telefono,
+            "ultima_actualizacion" to currentDate
 
         )
         //Log.e("codigo md", "$dm_codigo")

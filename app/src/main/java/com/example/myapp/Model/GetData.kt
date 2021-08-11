@@ -21,6 +21,7 @@ data class GetData (
       var mo_nombre:String,
       var mo_telefono:String,
       var vh_placa:String,
-      var factura:String
+      var factura:String,
+      var mo_url_img:String
 )
 

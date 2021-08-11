@@ -53,10 +53,10 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
             context.startActivity(intent)
         }
 
-        if (exampleList[position].des_id_estado == 3){
+       /* if (exampleList[position].des_id_estado == 3){
             holder.switchValue.isChecked = true
 
-        }
+        }*/
 
 
        holder.btnIniciar.setOnClickListener {
@@ -67,7 +67,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
            preffs.saveMo_telefono(exampleList[position].mo_telefono)
            preffs.saveVh_placa(exampleList[position].vh_placa)
            preffs.saveFactura(exampleList[position].factura)
-
+           preffs.saveFoto(exampleList[position].mo_url_img)
            (context as ViewMain).locationupdates()
        }
 
@@ -110,7 +110,7 @@ class AdapterData(private val exampleList: List<GetData>,val context: Context) :
         val textView4: TextView = itemView.findViewById(R.id.tipo)
         val textView6: TextView = itemView.findViewById(R.id.factura)
         val textView5: TextView = itemView.findViewById(R.id.orden)
-        var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
+        //var switchValue = itemView.findViewById<SwitchCompat>(R.id.startEnd)
         var btnIniciar = itemView.findViewById<Button>(R.id.biniciar)
         var btnFinalizar = itemView.findViewById<Button>(R.id.bfinalizar)
 

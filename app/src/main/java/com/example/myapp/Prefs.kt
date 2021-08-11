@@ -14,6 +14,7 @@ class Prefs(val context:Context) {
     val SHARED_MO_TELEFONO = "mo_telefono"
     val SHARED_VH_PLACA = "vh_placa"
     val SHARED_FACTURA = "factura"
+    val SHARED_FOTO = "mo_url_img"
 
 
     val storage = context.getSharedPreferences(SHARED_NAME, 0)
@@ -64,6 +65,12 @@ class Prefs(val context:Context) {
         storage.edit().putString(SHARED_FACTURA,factura).apply()
     }
     fun getFactura():String= storage.getString(SHARED_FACTURA,"")!!
+
+    fun saveFoto(foto:String){
+        storage.edit().putString(SHARED_FOTO, foto).apply()
+    }
+    fun getFoto():String=storage.getString(SHARED_FOTO,"")!!
+
 
     fun wipe(){
         storage.edit().clear().apply()
