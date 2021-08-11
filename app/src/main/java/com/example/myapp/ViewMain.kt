@@ -228,7 +228,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         }else {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    3000,
+                    5000,
                     0F,
                   this
             )
@@ -343,7 +343,7 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
         val fecha = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
         val currentDate = fecha.format(Date())
         val ip: String = getString(R.string.ip)
-        val urlfoto= ip+"domicilios_ver2/fotos_motoristas/"+mo_url_img
+        val urlfoto= ip+"/domicilios_ver2/fotos_motoristas/"+mo_url_img
 
         val user = hashMapOf(
             "latitude" to latitude.toDouble(),
@@ -351,7 +351,9 @@ class ViewMain : AppCompatActivity(), MultiplePermissionsListener, LocationListe
             "nombre_moto" to mo_nombre,
             "placa_moto" to vh_placa,
             "telefono_moto" to mo_telefono,
-            "ultima_actualizacion" to currentDate
+            "ultima_actualizacion" to currentDate,
+            "foto_moto" to urlfoto,
+            "dm_codigo" to dm_codigo
 
         )
         //Log.e("codigo md", "$dm_codigo")
